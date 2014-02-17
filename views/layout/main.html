@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>踏骐自行车</title>
+    <script src="/res/js/angular.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.3/cosmo/bootstrap.min.css" rel="stylesheet">
+    <link href="/res/css/style.css" rel="stylesheet">
+    <link href="/res/css/1366_768/grid.css" rel="stylesheet">
+    <mesh id='header_script' />
+</head>
+<body>
+<div class="content clearfix">
+    <div id="topMenu">
+        <ul id="mainMenu">
+            <li class="logo"><a href="/">首页</a></li>
+            <li><a href="/issues">活动</a></li>
+            <!--<li>自行车</li>-->
+            <!--<li>装备</li>-->
+            <!--<li>零件</li>-->
+        </ul>
+        <ul id="userMenu">
+            @*{
+            var xuser = model.req.session.user;
+            }
+            @if (xuser==null){
+            <li><a href="/register">注册</a> | <a href="/login">登录</a></li>
+            }else{
+            <li>欢迎你，{{=xuser.nick}} | <a href="/logout">退出</a></li>
+            }*@
+        </ul>
+    </div>    
+    <div class="container_24_12">
+    	<mesh id='content' />        
+    </div>
+    <div id="footer">
+        版权所有 (C) 2014 踏骐
+        <br/>
+        享受自然，触摸生命！
+    </div>
+</div>
+<mesh id='footer_script' />
+</body>
+</html>
