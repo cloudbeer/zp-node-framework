@@ -20,7 +20,8 @@
     }
 ```
 
-* 然后寻找 controllers 目录下的文件，进行类似 asp.net MVC 方式的路由。
+* 然后寻找 controllers 目录下的文件，进行类似 asp.net MVC 方式的路由。如：
+/home/index 就会被映射到 /controllers/Home.js 中的 index 方法（忽略了大小写）。
 
 使用方法：
 
@@ -59,20 +60,20 @@
 <div id='content'>
 ```
 
-* 使用了 vash 模版引擎，主要是觉得 Razor 模版很不错。 **好吧，我承认我是该死的 asp.NET 程序员。**
+* 使用了 vash 模版引擎，主要是觉得 Razor 模版很不错。 **好吧，我承认我是该死的 asp.NET 程序员，我用 vs 写 js**
 
-* 明白了个中道理，使用其他模版引擎也是易如反掌好么。
+* 明白了个中道理，使用其他模版引擎也是易如反掌好么，唉 express 居然不支持 jshtml。
 
 
 #其他功能特点
 
-* 做了一个 controllers 目录的监控，可以在改动 controllers 的时候不重启。
+    * 做了一个 controllers 目录的监控，可以在改动 controllers 的时候不重启。
+
+    * 偷懒了，直接用 connect 来支撑了。
 
 
 #计划中
-
-   * Session 的支持（内存，memcached, redis)
-
+    
    * 优化：模版和页面的 cache
 
 
