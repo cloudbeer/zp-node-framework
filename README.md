@@ -67,14 +67,14 @@
 
 #其他功能特点
 
-    * 做了一个 controllers 目录的监控，可以在改动 controllers 的时候不重启。
+* 做了一个 controllers 目录的监控，可以在改动 controllers 的时候不重启。
 
-    * 偷懒了，直接用 connect 来支撑了。
+* 偷懒了，直接用 connect 来支撑了。
 
 
 #计划中
     
-   * 优化：模版和页面的 cache
+* 优化：模版和页面的 cache
 
 
 
