@@ -1,4 +1,5 @@
 exports.route = function (pathname, routes, controllers, req, res) {
+
     var routeFun = routes[pathname];
     if (typeof routeFun === 'function') {
         routeFun(req, res);
@@ -23,7 +24,7 @@ exports.route = function (pathname, routes, controllers, req, res) {
         }
     }
 
-    //此部分用于输出静态文件，正式服务器，请使用nginx或者apache来搞
+    //此部分用于输出静态文件，正式服务器，请使用 nginx或者apache来搞
     var fs = require('fs');
     var path = require('path');
     if (pathname == "/") pathname = "/index.html";  //default    docment

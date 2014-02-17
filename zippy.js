@@ -1,6 +1,8 @@
 var connect = require('connect')
   , http = require('http')
-  , routine = require('./routine');;
+  , routine = require('./routine');
+
+require('./viewengine');
 
 var app = connect();
 
@@ -24,8 +26,7 @@ var zippy = module.exports = {
                 var pathname = pathArr.pathname.toLowerCase();
                 var isRouted = routine.route(pathname, zippy.routes, zippy.controllers, req, res);
                 if (!isRouted) {
-                    res.writeHead(404);
-                    res.end();
+                    res.er404("没有找到路由，控制器或者页面。");
                 }
             }
         });

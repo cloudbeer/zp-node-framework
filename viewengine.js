@@ -6,8 +6,14 @@ http.ServerResponse.prototype.html = function (html, status) {
     this.header();
     status = status | 200;
     this.writeHead(status, { 'Content-Type': 'text/html' });
+    //this.mesh("error", { error: html });
     this.end(html);
 }
+http.ServerResponse.prototype.error = function (html, status) {
+    this.header();
+    this.mesh("error", { error: html, status: status }, null, status);
+}
+
 http.ServerResponse.prototype.json = function (jObj, status) {
     this.header();
     status = status | 200;
@@ -16,23 +22,24 @@ http.ServerResponse.prototype.json = function (jObj, status) {
 }
 
 http.ServerResponse.prototype.er404 = function (msg) {
-    this.html(msg, 404);
+    this.error(msg, 404);
 }
 http.ServerResponse.prototype.er500 = function (msg) {
-    this.html(msg, 500);
+    this.error(msg, 500);
 }
 
 //模拟 SiteMesh 的方法。我从来就记不住正则表达式，借用了 cheerio （like jquery），还有vash (like razor)
-http.ServerResponse.prototype.mesh = function (page, model, layout) {
+http.ServerResponse.prototype.mesh = function (page, model, layout, status) {
     var path = require('path');
     var fs = require('fs');
     var self = this;
+    status = 200 | status;
 
-    //TODO: 这里的应写成配置放到外面
+    //TODO: 这里可以写成配置放到外面
     var view_path = '/views', ext = '.html';
 
     if (!page) {
-        self.er500('必须指定页面。');
+        self.er500('mesh的时候，必须指定页面。');
         return;
     }
     if (!layout) {
@@ -41,11 +48,12 @@ http.ServerResponse.prototype.mesh = function (page, model, layout) {
     }
     var pageFile = path.join(__dirname, view_path, page + ext);
     var layoutFile = path.join(__dirname, view_path, layout + ext);
+
     if (!fs.existsSync(pageFile)) {
-        self.er500('找不到页面文件 ' + pageFile); return;
+        self.html('找不到页面文件 ' + pageFile, 404); return;
     }
     if (!fs.existsSync(layoutFile)) {
-        self.er500('找不到模版文件 ' + layoutFile); return;
+        self.html('找不到模版文件 ' + layoutFile, 404); return;
     }
 
     fs.readFile(pageFile, { encoding: 'utf8' }, function (err1, pageData) {
@@ -57,7 +65,7 @@ http.ServerResponse.prototype.mesh = function (page, model, layout) {
             var $p = cheerio.load(pageData);
             var $l = cheerio.load(layoutData);
 
-            $l('title').html($p('title').html());
+            $l('title').html($p('title').html() + ' - ' + $l('title').html());
             var layoutMesh = $l('mesh');
             var lLen = layoutMesh.length;
             for (var a = 0; a < lLen; a++) {
@@ -75,7 +83,7 @@ http.ServerResponse.prototype.mesh = function (page, model, layout) {
             var tplHtml = $l.html();
             var vash = require('vash');
             var tpl = vash.compile(tplHtml);
-            self.html(tpl(model));
+            self.html(tpl(model), status);
         });
     });
 }
