@@ -9,10 +9,11 @@
 
 <p>规则如下：</p>
 
-<ol>
-<li>如果在路由表里配置了路由，则按照路由的规则进行。
-使用方法：</li>
-</ol>
+<ul>
+<li>如果在路由表里配置了路由，则按照路由的规则进行。</li>
+</ul>
+
+<p>使用方法：</p>
 
 <p><code>nodejs
     zippy.routes["/test"] = function (req, res) {
@@ -20,16 +21,17 @@
     }
 </code></p>
 
-<ol>
-<li>然后寻找 controllers 目录下的文件，进行类似 asp.net MVC 方式的路由。
-使用方法：</li>
-</ol>
+<ul>
+<li>然后寻找 controllers 目录下的文件，进行类似 asp.net MVC 方式的路由。</li>
+</ul>
+
+<p>使用方法：</p>
 
 <p><code>nodejs
     require('../viewengine');
     exports.Home = {
         index: function (req, res) {
-            res.mesh('home_index', { req: req, list: 'i am a list' });
+            res.mesh('home_index', { req: req, list: 'i am a list' }, 'layout/main');
         },
         index1: function (req, res) {
             res.json({site:1});
@@ -37,37 +39,46 @@
     }
 </code></p>
 
-<ol>
-<li>如果以上两个规则没有，就直接寻找响应路径的静态文件。（这个在正式环境下应该由 webserver 完成）。</li>
-</ol>
+<ul>
+<li>如果以上两个规则没有，就直接寻找相应路径的静态文件。（这个在正式环境下应该由 webserver 完成）。</li>
+</ul>
 
 <h1>模版引擎</h1>
 
-<ol>
-<li>SiteMesh 的方式，主要是借用了 cheerio 库，对 layout 和页面进行合并。
-使用方法：
-在模版里</li>
-</ol>
+<ul>
+<li>SiteMesh 的方式，主要是借用了 cheerio 库，对 layout 和页面进行合并。</li>
+</ul>
+
+<p>使用方法：</p>
+
+<p>在模版里</p>
 
 <p><code>html
 &lt;mesh id='content' /&gt;
 </code></p>
 
-<blockquote>
-  <blockquote>
-    <p>在页面里</p>
-  </blockquote>
-</blockquote>
+<p>在页面里</p>
 
 <p><code>html
 &lt;div id='content'&gt;
 </code></p>
 
-<ol>
-<li>使用了 vash 模版引擎，主要是觉得 Razor 模版很不错。</li>
-</ol>
+<ul>
+<li>使用了 vash 模版引擎，主要是觉得 Razor 模版很不错。 <strong>好吧，我承认我是该死的 asp.NET 程序员。</strong></li>
+</ul>
 
-<h3>好吧，我承认我是该死的 asp.NET 程序员。</h3>
+<h1>其他功能特点</h1>
+
+<ul>
+<li>做了一个 controllers 目录的监控，可以在改动 controllers 的时候不重启。</li>
+</ul>
+
+<h1>计划中</h1>
+
+<ul>
+<li><p>Session 的支持（内存，memcached, redis)</p></li>
+<li><p>优化：模版和页面的 cache</p></li>
+</ul>
 
 <hr />
 
