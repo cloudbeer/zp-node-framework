@@ -4,8 +4,10 @@ http.ServerResponse.prototype.header = function () {
 }
 http.ServerResponse.prototype.html = function (html, status) {
     this.header();
-    status = status | 200;
+    if (!status)
+        status = 200;
     this.writeHead(status, { 'Content-Type': 'text/html' });
+    console.log(status);
     //this.mesh("error", { error: html });
     this.end(html);
 }
@@ -16,7 +18,8 @@ http.ServerResponse.prototype.error = function (html, status) {
 
 http.ServerResponse.prototype.json = function (jObj, status) {
     this.header();
-    status = status | 200;
+    if (!status)
+        status = 200;
     this.writeHead(status, { 'Content-Type': 'application/json' });
     this.end(JSON.stringify(jObj));
 }
@@ -33,7 +36,8 @@ http.ServerResponse.prototype.mesh = function (page, model, layout, status) {
     var path = require('path');
     var fs = require('fs');
     var self = this;
-    status = 200 | status;
+    if (!status)
+        status = 200;
 
     //TODO: 这里可以写成配置放到外面
     var view_path = '/views', ext = '.html';
@@ -80,10 +84,22 @@ http.ServerResponse.prototype.mesh = function (page, model, layout, status) {
                 }
             }
 
-            var tplHtml = $l.html();
-            var vash = require('vash');
-            var tpl = vash.compile(tplHtml);
-            self.html(tpl(model), status);
+            try {
+                var tplHtml = $l.html();
+                var vash = require('vash');
+                var tpl = vash.compile(tplHtml);
+                self.html(tpl(model), status);
+            } catch (ex) {
+                console.log(ex);
+                var emsg = ex.message;
+                var Encoder = require('node-html-encoder').Encoder;
+
+                // entity type encoder
+                var encoder = new Encoder('entity');
+                emsg = encoder.htmlEncode(emsg).split("\n").join("<br>");;
+                console.log( emsg);
+                self.er500("------------<br />" + emsg);
+            }
         });
     });
 }

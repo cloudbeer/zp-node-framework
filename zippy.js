@@ -40,19 +40,20 @@ var zippy = module.exports = {
             var fName = require('path').basename(file, '.js');
             zippy.controllers[fName.toLowerCase()] = controller[fName];
         });
+    },
+    devWatch: function () {
+        //这里用于监视控制器的改变，生产环境请勿使用。
+        require("fs").watch("./controllers", function (ev, fn) {
+            try {
+                var filename = require('path').resolve('./controllers/' + fn);
+                delete require.cache[filename];
+                zippy.loadControllers();
+            } catch (err) {
+            }
+        });
     }
 };
 
-
-//这里用于监视控制器的改变，生产环境请勿使用。
-require("fs").watch("./controllers", function (ev, fn) {
-    try {
-        var filename = require('path').resolve('./controllers/' + fn);
-        delete require.cache[filename];
-        zippy.loadControllers();
-    } catch (err) {
-    }
-});
 
 
 

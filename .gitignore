@@ -236,5 +236,7 @@ node_modules
 *.user
 *.sln
 *.suo
-bin
-obj
+bin/
+obj/
+
+res/umeditor/

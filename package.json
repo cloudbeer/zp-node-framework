@@ -8,6 +8,7 @@
   "dependencies": {	
 	"vash":"*",
 	"cheerio":"*",
-	"connect":"*"
+	"connect":"*",
+	"node-html-encoder": "*"
   }
 }
