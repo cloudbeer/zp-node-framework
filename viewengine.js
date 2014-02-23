@@ -1,4 +1,26 @@
 var http = require('http');
+
+var errHtml = function (error) {
+    var msg = '';
+    if (error instanceof Error)
+        msg = error.message;
+    else
+        msg = error;
+    //console.log(error.message);
+    return "<!DOCTYPE html>\
+<html>\
+<head>\
+    <title>出错了 - zp-node-framework.</title>\
+</head>\
+<body style='margin:0;padding:0;background:#eeeee1;'>\
+<h1 style='padding:10px 4px;margin:0;border-bottom:2px solid #ccc;'>出错了</h1>\
+<div><textarea style='font-size:14px;padding:10px;white-space:nowrap;width:98%;height:400px;border:0' readonly='readonly'>\
+" + msg + "</textarea></div>\
+</body>\
+</html>\
+";
+};
+
 http.ServerResponse.prototype.header = function () {
     this.setHeader('X-Powered-By', 'zippy framework @ cloudbeer');
 }
@@ -7,13 +29,14 @@ http.ServerResponse.prototype.html = function (html, status) {
     if (!status)
         status = 200;
     this.writeHead(status, { 'Content-Type': 'text/html' });
-    console.log(status);
-    //this.mesh("error", { error: html });
     this.end(html);
 }
-http.ServerResponse.prototype.error = function (html, status) {
+http.ServerResponse.prototype.error = function (error, status) {
     this.header();
-    this.mesh("error", { error: html, status: status }, null, status);
+    if (!status)
+        status = 500;
+    var resHtml = errHtml(error);
+    this.html(resHtml, status);
 }
 
 http.ServerResponse.prototype.json = function (jObj, status) {
@@ -54,10 +77,10 @@ http.ServerResponse.prototype.mesh = function (page, model, layout, status) {
     var layoutFile = path.join(__dirname, view_path, layout + ext);
 
     if (!fs.existsSync(pageFile)) {
-        self.html('找不到页面文件 ' + pageFile, 404); return;
+        self.er500('找不到页面文件 ' + pageFile); return;
     }
     if (!fs.existsSync(layoutFile)) {
-        self.html('找不到模版文件 ' + layoutFile, 404); return;
+        self.er500('找不到模版文件 ' + layoutFile); return;
     }
 
     fs.readFile(pageFile, { encoding: 'utf8' }, function (err1, pageData) {
@@ -90,15 +113,7 @@ http.ServerResponse.prototype.mesh = function (page, model, layout, status) {
                 var tpl = vash.compile(tplHtml);
                 self.html(tpl(model), status);
             } catch (ex) {
-                console.log(ex);
-                var emsg = ex.message;
-                var Encoder = require('node-html-encoder').Encoder;
-
-                // entity type encoder
-                var encoder = new Encoder('entity');
-                emsg = encoder.htmlEncode(emsg).split("\n").join("<br>");;
-                console.log( emsg);
-                self.er500("------------<br />" + emsg);
+                self.error(ex, 500);
             }
         });
     });
