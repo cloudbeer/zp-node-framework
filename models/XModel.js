@@ -1,12 +1,12 @@
 var XModel = {
-    createNew: function () {
+	createNew: function () {
 		var base = require("./Base");
-        var entity = base.createNew();				
+		var entity = base.createNew();				
 		
 		
 		
-        return entity;
-    }
+		return entity;
+	}
 };
 
 module.exports = XModel;

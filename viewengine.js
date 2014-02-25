@@ -1,20 +1,21 @@
 var http = require('http');
 
 var errHtml = function (error) {
-    var msg = '';
+    var msg = '', title = '出错了';
     if (error instanceof Error)
-        msg = error.message;
+        msg = "\n\n" + error.stack;
     else
-        msg = error;
-    //console.log(error.message);
+        msg = error; title = error.message
+
     return "<!DOCTYPE html>\
 <html>\
 <head>\
     <title>出错了 - zp-node-framework.</title>\
+    <style>*{font-family:Consolas, 'Liberation Mono', Courier, monospace;}</style>\
 </head>\
-<body style='margin:0;padding:0;background:#eeeee1;'>\
-<h1 style='padding:10px 4px;margin:0;border-bottom:2px solid #ccc;'>出错了</h1>\
-<div><textarea style='font-size:14px;padding:10px;white-space:nowrap;width:98%;height:400px;border:0' readonly='readonly'>\
+<body style='margin:0;padding:0;background:#fff;'>\
+<h1 style='padding:10px 4px;margin:0;border-bottom:2px solid #ccc;'>" + title + "</h1>\
+<div style='padding:20px'><textarea style='font-size:14px;padding:0;background:transparent;outline:none;width:100%;height:400px;border:0' readonly='readonly'>\
 " + msg + "</textarea></div>\
 </body>\
 </html>\
@@ -30,13 +31,14 @@ http.ServerResponse.prototype.html = function (html, status) {
         status = 200;
     this.writeHead(status, { 'Content-Type': 'text/html' });
     this.end(html);
+    return;
 }
-http.ServerResponse.prototype.error = function (error, status) {
-    this.header();
+http.ServerResponse.prototype.error = function (err, status) {
     if (!status)
         status = 500;
-    var resHtml = errHtml(error);
+    var resHtml = errHtml(err);
     this.html(resHtml, status);
+    return;
 }
 
 http.ServerResponse.prototype.json = function (jObj, status) {
@@ -45,6 +47,7 @@ http.ServerResponse.prototype.json = function (jObj, status) {
         status = 200;
     this.writeHead(status, { 'Content-Type': 'application/json' });
     this.end(JSON.stringify(jObj));
+    return;
 }
 
 http.ServerResponse.prototype.er404 = function (msg) {
@@ -113,7 +116,8 @@ http.ServerResponse.prototype.mesh = function (page, model, layout, status) {
                 var tpl = vash.compile(tplHtml);
                 self.html(tpl(model), status);
             } catch (ex) {
-                self.error(ex, 500);
+                self.error(ex);
+                return;
             }
         });
     });

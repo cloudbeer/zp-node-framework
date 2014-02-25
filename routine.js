@@ -2,7 +2,12 @@ exports.route = function (pathname, routes, controllers, req, res) {
 
     var routeFun = routes[pathname];
     if (typeof routeFun === 'function') {
-        routeFun(req, res);
+        try {
+            routeFun(req, res);
+        }
+        catch (err) {
+            res.error(err);
+        }
         return true;
     }
 
@@ -17,9 +22,27 @@ exports.route = function (pathname, routes, controllers, req, res) {
 
     var controllerObj = controllers[controller];
     if (controllerObj) {
-        var actFun = controllerObj[action];
-        if (typeof actFun === 'function') {
-            actFun(req, res);
+        var method = req.method.toLowerCase();
+        if (method == 'get') {
+            var actFun = controllerObj[action];
+            if (typeof actFun === 'function') {
+                try {
+                    actFun(req, res);
+                }
+                catch (err) {
+                    res.error(err);
+                }
+                return true;
+            }
+        }
+        var actFun2 = controllerObj[action + "$" + method];
+        if (typeof actFun2 === 'function') {
+            try {
+                actFun2(req, res);
+            }
+            catch (err) {
+                res.error(err);
+            }
             return true;
         }
     }

@@ -9,6 +9,8 @@
 	"vash":"*",
 	"cheerio":"*",
 	"connect":"*",
-	"node-html-encoder": "*"
+	"node-html-encoder": "*",
+	"mongodb": "*",
+	"validator": "*"
   }
 }

@@ -46,6 +46,23 @@ var res = function (a) {
 
 console.log(res);
 
+var value;
+var A = function (callback) {
+    setTimeout(function () {
+        value = 10;
+        callback();
+    }, 2000);
+};
+var B = function () {
+    console.log(value);
+};
+
+var queue = function (funcs) {
+    var f = funcs.shift();
+    f(funcs.shift());
+}
+//queue([A, B]);
+
 
 
 //var exdate = new Date();
@@ -54,3 +71,11 @@ console.log(res);
 //console.log(exdate);
 //exdate.setMinutes(exdate.getMinutes() + 30);
 //console.log(exdate);
+var now = new Date();
+console.log(now.getFullYear());
+console.log(now.getMonth());
+console.log(now.getDate());
+console.log(now.getHours());
+console.log(now.getMinutes());
+console.log(now.getSeconds());
+console.log(now.getTime());

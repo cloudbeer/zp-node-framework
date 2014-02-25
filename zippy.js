@@ -5,7 +5,15 @@ var connect = require('connect')
 require('./viewengine');
 
 var app = connect();
-
+//app.use(connect.bodyParser());
+app.use(connect.urlencoded());
+app.use(connect.json());
+app.use(connect.multipart());
+//app.use(function (err, req, res, next) {
+//    if (!err) return next();
+//    res.error(err);
+//});
+//app.user(require("connect-multipart"));
 
 var zippy = module.exports = {
     config: {
@@ -19,15 +27,25 @@ var zippy = module.exports = {
         zippy.loadControllers();
 
         app.use(function (req, res) {
-            var rUrl = req.url;
-            if (rUrl != '/favicon.ico') {
-                console.log(req.method + ' ' + rUrl);
-                var pathArr = require("url").parse(rUrl);
-                var pathname = pathArr.pathname.toLowerCase();
-                var isRouted = routine.route(pathname, zippy.routes, zippy.controllers, req, res);
-                if (!isRouted) {
-                    res.er404("没有找到路由，控制器或者页面。");
+            //var db = require("./mongodb");
+            //db.on('error', function (err) {
+            //    res.error(err);
+            //});
+            try {
+                var rUrl = req.url;
+                if (rUrl != '/favicon.ico') {
+                    console.log(req.method + ' ' + rUrl);
+                    var pathArr = require("url").parse(rUrl);
+                    var pathname = pathArr.pathname.toLowerCase();
+                    var isRouted = routine.route(pathname, zippy.routes, zippy.controllers, req, res);
+                    if (!isRouted) {
+                        res.er404("没有找到路由，控制器或者页面。");
+                    }
                 }
+            }
+            catch (error) {
+                res.error(error);
+                return;
             }
         });
 
