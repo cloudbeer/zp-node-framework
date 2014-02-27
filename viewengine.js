@@ -1,20 +1,24 @@
 var http = require('http');
 
-var errHtml = function (error) {
+var errHtml = function (error, status) {
     var msg = '', title = '出错了';
-    if (error instanceof Error)
+    if (!status)
+        status = 500;
+    if (error instanceof Error) {
         msg = "\n\n" + error.stack;
-    else
-        msg = error; title = error.message
-
+        title = error.message;
+    }
+    else {
+        msg = error;
+    }
     return "<!DOCTYPE html>\
 <html>\
 <head>\
     <title>出错了 - zp-node-framework.</title>\
-    <style>*{font-family:Consolas, 'Liberation Mono', Courier, monospace;}</style>\
+    <style>*{font-family:Consolas, 'Liberation Mono', Courier, 'Microsoft YaHei' ;}</style>\
 </head>\
 <body style='margin:0;padding:0;background:#fff;'>\
-<h1 style='padding:10px 4px;margin:0;border-bottom:2px solid #ccc;'>" + title + "</h1>\
+<h1 style='padding:10px 4px;margin:0;border-bottom:2px solid #ccc;'>[" + status + "] " + title + " </h1>\
 <div style='padding:20px'><textarea style='font-size:14px;padding:0;background:transparent;outline:none;width:100%;height:400px;border:0' readonly='readonly'>\
 " + msg + "</textarea></div>\
 </body>\
@@ -36,11 +40,17 @@ http.ServerResponse.prototype.html = function (html, status) {
 http.ServerResponse.prototype.error = function (err, status) {
     if (!status)
         status = 500;
-    var resHtml = errHtml(err);
+    var resHtml = errHtml(err, status);
     this.html(resHtml, status);
     return;
 }
 
+http.ServerResponse.prototype.redirect = function (url) {
+    this.writeHead(302, {
+        'Location': url
+    });
+    this.end();
+}
 http.ServerResponse.prototype.json = function (jObj, status) {
     this.header();
     if (!status)

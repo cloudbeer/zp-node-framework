@@ -9,6 +9,9 @@ var app = connect();
 app.use(connect.urlencoded());
 app.use(connect.json());
 app.use(connect.multipart());
+app.use(connect.cookieParser());
+app.use(connect.query());
+app.use(connect.session({ secret: 'touch.bike.123', cookie: { secure: true } }));
 //app.use(function (err, req, res, next) {
 //    if (!err) return next();
 //    res.error(err);
@@ -27,10 +30,6 @@ var zippy = module.exports = {
         zippy.loadControllers();
 
         app.use(function (req, res) {
-            //var db = require("./mongodb");
-            //db.on('error', function (err) {
-            //    res.error(err);
-            //});
             try {
                 var rUrl = req.url;
                 if (rUrl != '/favicon.ico') {
@@ -39,7 +38,7 @@ var zippy = module.exports = {
                     var pathname = pathArr.pathname.toLowerCase();
                     var isRouted = routine.route(pathname, zippy.routes, zippy.controllers, req, res);
                     if (!isRouted) {
-                        res.er404("没有找到路由，控制器或者页面。");
+                        res.error("没有找到路由，控制器或者页面。", 404);
                     }
                 }
             }

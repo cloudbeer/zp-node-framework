@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>踏骐自行车</title>
@@ -21,14 +21,14 @@
                 <!--<li>零件</li>-->
             </ul>
             <ul id="userMenu">
-                @*{
+                @{
                 var xuser = model.req.session.user;
                 }
                 @if (xuser==null){
-                <li><a href="/register">注册</a> | <a href="/login">登录</a></li>
+                <li><a href="/account/register">注册</a> | <a href="/account/login">登录</a></li>
                 }else{
-                <li>欢迎你，{{=xuser.nick}} | <a href="/logout">退出</a></li>
-                }*@
+                <li>欢迎你，@xuser.nick | <a href="/logout">退出</a></li>
+                }
             </ul>
         </div>
         <div class="container_24_12">
